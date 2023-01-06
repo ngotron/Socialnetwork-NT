@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "605692433877",
+    "project_id": "social-network-nt",
+    "storage_bucket": "social-network-nt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605692433877:android:a9e8092724a5262aa6995c",
+        "android_client_info": {
+          "package_name": "com.socialnetworknt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "605692433877-slkfa4ntj3g64c2sv2gseuf9043ipqcq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.socialnetworknt",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "605692433877-ntdg9lvuuphmui4rotb48a4crsnqkfr5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxd0nEO1QKlz-enH0ich7aN0Gh4rBNwK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "605692433877-ntdg9lvuuphmui4rotb48a4crsnqkfr5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
