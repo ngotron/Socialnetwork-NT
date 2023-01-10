@@ -1,23 +1,36 @@
-import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
-import { faHeart, faSquarePlus } from '@fortawesome/free-regular-svg-icons';
-import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {faFacebookMessenger} from '@fortawesome/free-brands-svg-icons';
+import {faHeart, faSquarePlus} from '@fortawesome/free-regular-svg-icons';
+import {faAngleDown, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Post from '../content/Post';
 // import Post from '../content/Post';
 
-const Navigation = ({ navigation }) => {
+const Navigation = ({navigation}) => {
+ 
   return (
     <View style={styles.container}>
       <View style={styles.header_bar}>
         <View style={styles.header_logo}>
           <Text style={styles.header_txt}>Instagram</Text>
-          <FontAwesomeIcon style={{ alignSelf: 'center' }} icon={faAngleDown} />
+          <FontAwesomeIcon style={{alignSelf: 'center'}} icon={faAngleDown} />
         </View>
         <View style={styles.header_icon}>
           <FontAwesomeIcon icon={faHeart} />
           <FontAwesomeIcon icon={faFacebookMessenger} />
-          <FontAwesomeIcon icon={faSquarePlus} />
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('AddNewPost');
+            }}>
+            <FontAwesomeIcon icon={faSquarePlus} />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.header_story}>

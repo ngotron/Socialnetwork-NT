@@ -9,9 +9,52 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+// import UploadImage from '../../components/UploadImage';
+
+import storage from '@react-native-firebase/storage';
+
+import {Alert, Platform} from 'react-native';
 import UploadImage from '../../components/UploadImage';
+
 const AdminScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  // const [avt] = useGlobalState('avt');
+
+  // const saveAvt = async () => {
+  //   const permission = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+  //   const permissionW = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+  //   const permissionA = await request(PERMISSIONS.ANDROID.ACCESS_MEDIA_LOCATION);
+  //   if (permission == RESULTS.GRANTED && permissionW == RESULTS.GRANTED && permissionA == RESULTS.GRANTED) {
+  //     if (avt) {
+  //       const reference = firebase.storage().ref(`/avt/${avt.name}`);
+  //       const realPath = await RNGRP.getRealPathFromURI(avt.uri)
+  //       reference
+  //         .putFile(`${avt.uri}`)
+  //         .catch(e => console.log('upload img error: ', e.message));
+  //       console.log('save successfully: ', avt.name);
+  //       console.log("img path: ", realPath);
+  //       return;
+  //     }
+  //     console.log("avt null, can't save");
+  //   }
+  // };
+
+  const [image, setImage] = useState(null);
+
+  const UploadAvt = async () => {
+    const filename = image.substring(image.lastIndexOf('/') + 1);
+    const uploadUri =
+      Platform.OS === 'ios' ? image.replace('file://', '') : image;
+    const task = storage().ref(filename).putFile(uploadUri);
+    try {
+      await task;
+    } catch (e) {
+      console.error(e);
+    }
+    Alert.alert('Photo uploaded!');
+    setImage(null);
+  };
+
   return (
     <View>
       <View style={styles.container}>
@@ -77,9 +120,7 @@ const AdminScreen = () => {
                 justifyContent: 'space-between',
                 width: '60%',
               }}>
-              <Pressable
-                style={[styles.buttonSave]}
-                onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable style={[styles.buttonSave]} onPress={UploadAvt}>
                 <Text style={styles.textStyle}>Save</Text>
               </Pressable>
 
@@ -139,7 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: '#FFBF00',
-    marginLeft: 120,
+    marginLeft: 100,
   },
 
   centeredView: {

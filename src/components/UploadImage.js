@@ -1,20 +1,33 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
+import {useGlobalState} from './react-query/queries';
+// import {useGlobalState} from '../react-query/queries';
+
 export default function UploadImage() {
-  
- 
-  const [image, setImage] = useState(null);
-  const addImage = () => {};
+  const [avt, setAvt] = useGlobalState('avt', null);
+
+  const addImage = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: DocumentPicker.types.images,
+      });
+      setAvt(res[0]);
+    } catch (e) {
+      console.log('error pick img: ', e);
+    }
+  };
+
   return (
     <View style={imageUploaderStyles.container}>
-      {image && (
-        <Image source={{uri: image}} style={{width: 200, height: 200}} />
+      {avt && (
+        <Image source={{uri: avt.uri}} style={{width: 200, height: 200}} />
       )}
       <View style={imageUploaderStyles.uploadBtnContainer}>
         <TouchableOpacity
           onPress={addImage}
           style={imageUploaderStyles.uploadBtn}>
-          <Text>{image ? 'Edit' : 'Upload'} Image</Text>
+          <Text>{avt ? 'Edit' : 'Upload'} Image</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -37,7 +50,7 @@ const imageUploaderStyles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'lightgrey',
     width: '100%',
-    height: '25%',
+    height: '15%',
   },
   uploadBtn: {
     display: 'flex',

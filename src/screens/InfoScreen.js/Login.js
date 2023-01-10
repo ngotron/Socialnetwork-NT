@@ -21,39 +21,39 @@ const Login = ({ navigation }) => {
   // console.log("Name: " + email, "Password: " + password);
   // console.log('auth: ', auth())
   const onLoginPress = () => {
-    if (!email) {
-      alert("Please enter email");
-      return
-    }
-    if (!password) {
-      alert("Please enter password");
-      return
-    }
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log("ok")
-        console.log("Email: " + email)
-        console.log("Password: " + password)
-        if (initializing) setInitializing(false);
-        if (user) navigation.replace("MyTab")
-      })
-      .catch((error) => {
-        console.log("Email: " + email)
-        console.log("Password: " + password)
-        if (initializing) setInitializing(false);
-        // console.log("User: " + userCredential.user)
-        console.log("Error: " + error)
-        if (error.code === "auth/invalid-email")
-          setErrortext(error.message);
-        else if (error.code === "auth/user-not-found")
-          setErrortext("No User Found");
-        else {
-          setErrortext(
-            "Please check your email id or password"
-          );
-        }
-      })
+    // if (!email) {
+    //   alert("Please enter email");
+    //   return
+    // }
+    // if (!password) {
+    //   alert("Please enter password");
+    //   return
+    // }
+    // auth()
+    //   .signInWithEmailAndPassword(email, password)
+    //   .then(() => {
+    //     console.log("ok")
+    //     console.log("Email: " + email)
+    //     console.log("Password: " + password)
+    //     if (initializing) setInitializing(false);
+    //     if (user) navigation.replace("MyTab")
+    //   })
+    //   .catch((error) => {
+    //     console.log("Email: " + email)
+    //     console.log("Password: " + password)
+    //     if (initializing) setInitializing(false);
+    //     // console.log("User: " + userCredential.user)
+    //     console.log("Error: " + error)
+    //     if (error.code === "auth/invalid-email")
+    //       setErrortext(error.message);
+    //     else if (error.code === "auth/user-not-found")
+    //       setErrortext("No User Found");
+    //     else {
+    //       setErrortext(
+    //         "Please check your email id or password"
+    //       );
+    //     }
+    //   })
     // const auth = getAuth();
     // signInWithEmailAndPassword(auth, email, password)
     //   .then((userCredential) => {
@@ -90,8 +90,8 @@ const Login = ({ navigation }) => {
         </View>
         <TouchableOpacity
           style={styles.Login_button}
-          // onPress={() => navigation.navigate('MyTab')}
-          onPress={() => onLoginPress()}
+          onPress={() => navigation.navigate('MyTab')}
+          // onPress={() => onLoginPress()}
         >
           <Text style={styles.Login_txt}>Login</Text>
         </TouchableOpacity>

@@ -2,13 +2,38 @@ import {
   faBookmark,
   faComment,
   faHeart,
-  faPaperPlane
+  faPaperPlane,
 } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {faEllipsis} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import firestore from '@react-native-firebase/firestore';
+import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {getAllPosts} from '../../../firebase/post.fb';
+const Post = ({navigation}) => {
+  const [myData, setMydata] = useState([]);
+  useEffect(() => {
+    getDatabase();
+    
+  }, []);
 
-const Post = ({ navigation }) => {
+  const getDatabase = async () => {
+    const posts = await getAllPosts();
+    console.log("posts", posts);
+    try {
+      // Colection Lưu trữ danh sách tài liệu=> Cho phép tham chiếu đến testing
+      // Tham chiếu đến một tài liệu = doc
+      const data = await firestore()
+        .collection('Posts')
+        .doc()
+        .get();
+      console.log(data.id);
+      setMydata(data._data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.post}>
@@ -18,12 +43,7 @@ const Post = ({ navigation }) => {
               onPress={() => {
                 navigation.navigate('User');
               }}>
-              <Image
-                style={styles.img}
-                source={{
-                  uri: 'https://post.healthline.com/wp-content/uploads/2020/08/3180-Pug_green_grass-732x549-thumbnail-732x549.jpg',
-                }}
-              />
+              <Image style={styles.img} source={{uri: myData.avt}} />
             </TouchableOpacity>
           </View>
           <View>
@@ -31,7 +51,7 @@ const Post = ({ navigation }) => {
               onPress={() => {
                 navigation.navigate('User');
               }}>
-              <Text style={styles.post_title}>Ruffles</Text>
+              <Text style={styles.post_title}>{myData.name}</Text>
             </TouchableOpacity>
             <Text style={styles.post_txt}>Sponsored</Text>
           </View>
@@ -40,12 +60,7 @@ const Post = ({ navigation }) => {
           <FontAwesomeIcon icon={faEllipsis} />
         </View>
       </View>
-      <Image
-        style={styles.img_post}
-        source={{
-          uri: 'https://post.healthline.com/wp-content/uploads/2020/08/3180-Pug_green_grass-732x549-thumbnail-732x549.jpg',
-        }}
-      />
+      <Image style={styles.img_post} source={{uri: myData.postImg}} />
       <View style={styles.postInfor}>
         <View style={styles.postInfor_icon}>
           <FontAwesomeIcon icon={faHeart} />

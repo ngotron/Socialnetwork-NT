@@ -37,6 +37,7 @@ export default function MyTabs() {
                 size={24}
                 resizeMode="contain"
                 color={focused ? '#FFBF00' : '#000000'}
+                
               />
             </View>
           ),
