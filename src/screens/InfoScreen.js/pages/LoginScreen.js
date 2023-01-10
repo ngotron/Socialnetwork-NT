@@ -1,8 +1,7 @@
 import { faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-// import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "@react-native-firebase/auth";
-import { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,17 +9,30 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-// const auth = getAuth();
-const Login = ({ navigation }) => {
-  // const [initializing, setInitializing] = useState(true);
-  const [email, setName] = useState("");
+import SplashScreen from './SplashScreen';
+
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errortext, setErrortext] = useState("");
-  // const [user, setUser] = useState();
-  // const auth = getAuth();
-  // console.log("Name: " + email, "Password: " + password);
-  // console.log('auth: ', auth())
+
+  const forgotPassword = () => {
+    if (email != null) {
+      auth()
+        .sendPasswordResetEmail(email)
+        .then(() => {
+          alert("reset email sent to have been successful!");
+        })
+        .catch(function (e) {
+          console.log(e);
+        });
+    } else {
+      alert("Please enter a valid email!")
+    }
+  };
+
   const onLoginPress = () => {
+    setErrortext(" ");
     if (!email) {
       alert("Please enter email");
       return
@@ -31,41 +43,32 @@ const Login = ({ navigation }) => {
     }
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log("ok")
-        console.log("Email: " + email)
-        console.log("Password: " + password)
-        if (initializing) setInitializing(false);
-        if (user) navigation.replace("MyTab")
+      .then((user) => {
+        console.log('User account created & signed in!');
+        <SplashScreen />
+        alert('User account created & signed in!')
+        if (user) {
+          navigation.replace("MyTab")
+        }
       })
-      .catch((error) => {
-        console.log("Email: " + email)
-        console.log("Password: " + password)
-        if (initializing) setInitializing(false);
-        // console.log("User: " + userCredential.user)
-        console.log("Error: " + error)
-        if (error.code === "auth/invalid-email")
-          setErrortext(error.message);
-        else if (error.code === "auth/user-not-found")
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+          if (initializing) setInitializing(false);
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          setErrortext(error.message = "That email address is invalid!");
+          console.log('That email address is invalid!');
+        } else if (error.code === "auth/user-not-found")
           setErrortext("No User Found");
         else {
           setErrortext(
             "Please check your email id or password"
           );
         }
-      })
-    // const auth = getAuth();
-    // signInWithEmailAndPassword(auth, email, password)
-    //   .then((userCredential) => {
-    //     // Signed in 
-    //     // const user = userCredential.user;
-    //     console.log("successfully")
-    //     // ...
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //   });
+        console.error(error);
+      });
   }
   return (
     <View style={styles.container}>
@@ -74,31 +77,27 @@ const Login = ({ navigation }) => {
         <View>
           <TextInput
             style={styles.Login_user}
-            placeholder="Phone number, username or emal address"
+            placeholder="Enter your email address"
             value={email}
-
-            // onChange={(e) => setName(e.target.value)}
-            onChangeText={(email) => setName(email)}
+            onChangeText={(email) => setEmail(email)}
           />
           <TextInput
             style={styles.Login_password}
-            placeholder="Password"
+            placeholder="Enter your password"
             value={password}
-            // onChange={(e) => setPassword(e.target.value)}
-            onChangeText={(password) => setPassword(password)}
+            secureTextEntry={true}
+            onChangeText={(password) => { setPassword(password) }}
           />
         </View>
         <TouchableOpacity
           style={styles.Login_button}
-          // onPress={() => navigation.navigate('MyTab')}
           onPress={() => onLoginPress()}
         >
           <Text style={styles.Login_txt}>Login</Text>
         </TouchableOpacity>
         {errortext != "" ? (
           <Text style={styles.errorTextStyle}>
-            {" "}
-            {errortext}{" "}
+            {errortext}
           </Text>
         ) : null}
         <View>
@@ -113,13 +112,16 @@ const Login = ({ navigation }) => {
           <Text>Login in with Facebook</Text>
         </View>
         <View>
-          <Text style={styles.Login_fgPassword}>Forgotten your password?</Text>
+          <TouchableOpacity onPress={() => forgotPassword()}>
+            <Text style={styles.Login_fgPassword}>Forgotten your password?</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.signup}>
           <Text style={styles.Login_ask}>Don't have an account?</Text>
           <TouchableOpacity
-          // style={styles.Login_button}
-          // onPress={() => onLoginPress()}
+            onPress={() =>
+              navigation.navigate("Register")
+            }
           >
             <Text style={styles.Login_signup}> Sign up</Text>
           </TouchableOpacity>
@@ -128,7 +130,7 @@ const Login = ({ navigation }) => {
     </View >
   );
 };
-export default Login;
+export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
@@ -202,5 +204,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
     alignItems: 'center',
+  },
+  errorTextStyle: {
+    color: "red",
+    textAlign: "center",
+    fontSize: 14,
   },
 });

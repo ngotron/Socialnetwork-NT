@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   Modal,
@@ -7,10 +7,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import UploadImage from '../../components/UploadImage';
-const AdminScreen = () => {
+import Logout from './pages/Logout';
+const AdminScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View>
@@ -42,7 +43,7 @@ const AdminScreen = () => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.add_Btn}>
+          <TouchableOpacity style={styles.add_Btn} onPress={() => Logout(navigation)}>
             <Text
               style={{
                 color: '#ffffff',
@@ -97,7 +98,7 @@ const AdminScreen = () => {
         onPress={() => setModalVisible(true)}>
         <Text style={styles.textStyle}>Edit your profile</Text>
       </Pressable>
-    </View>
+    </View >
   );
 };
 
