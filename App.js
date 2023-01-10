@@ -7,9 +7,11 @@ import MyTabs from './src/navigations/NavigationButton';
 import AddNewPost from './src/screens/feedpost/content/AddNewPost';
 import Navigation from './src/screens/feedpost/header/NavigationBar';
 import AdminScreen from './src/screens/InfoScreen.js/AdminScreen';
-import Login from './src/screens/InfoScreen.js/Login';
-import Test from './src/screens/InfoScreen.js/Test';
-import UserScreen from './src/screens/InfoScreen.js/UserScreen';
+import Auth from './src/screens/InfoScreen.js/Auth';
+import LoginScreen from './src/screens/InfoScreen.js/pages/LoginScreen';
+import Logout from './src/screens/InfoScreen.js/pages/Logout';
+import RegisterScreen from './src/screens/InfoScreen.js/pages/RegisterScreen';
+import SplashScreen from './src/screens/InfoScreen.js/pages/SplashScreen';
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
 const App = () => {
@@ -17,17 +19,34 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Register"
           screenOptions={{
             headerShow: false,
           }}>
           <Stack.Screen name="AddNewPost" component={AddNewPost} />
           <Stack.Screen name="Navigation" component={Navigation} />
-          <Stack.Screen name="User" component={UserScreen} />
+          {/* <Stack.Screen name="User" component={UserScreen} /> */}
           <Stack.Screen name="Admin" component={AdminScreen} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Test" component={Test} />
-          <Stack.Screen name="MyTab" component={MyTabs} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen
+            name="MyTab"
+            component={MyTabs}
+            options={{headerShown: false}}
+          />
+          {/* <Stack.Screen name="Authentest" component={Authentest} /> */}
+          {/* <Stack.Screen name="Register" component={RegisterScreen} /> */}
+          <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Auth"
+            component={Auth}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Logout" component={Logout} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>
