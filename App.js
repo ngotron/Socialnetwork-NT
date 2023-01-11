@@ -5,6 +5,7 @@ import {StyleSheet} from 'react-native';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import MyTabs from './src/navigations/NavigationButton';
 import AddNewPost from './src/screens/feedpost/content/AddNewPost';
+import Post from './src/screens/feedpost/content/Post';
 import Navigation from './src/screens/feedpost/header/NavigationBar';
 import AdminScreen from './src/screens/InfoScreen.js/AdminScreen';
 import Auth from './src/screens/InfoScreen.js/Auth';
@@ -19,7 +20,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Register"
+          initialRouteName="MyTab"
           screenOptions={{
             headerShow: false,
           }}>
@@ -47,6 +48,7 @@ const App = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Logout" component={Logout} />
+        
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

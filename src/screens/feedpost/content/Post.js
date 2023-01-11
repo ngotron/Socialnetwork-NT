@@ -1,87 +1,107 @@
 import {
   faBookmark,
   faComment,
+  faEllipsis,
   faHeart,
   faPaperPlane,
-} from '@fortawesome/free-regular-svg-icons';
-import {faEllipsis} from '@fortawesome/free-solid-svg-icons';
+} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import firestore from '@react-native-firebase/firestore';
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {getAllPosts} from '../../../firebase/post.fb';
-const Post = ({navigation}) => {
-  const [myData, setMydata] = useState([]);
-  useEffect(() => {
-    getDatabase();
-    
-  }, []);
+import {useEffect} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import useFirestoreCollection from '../../../hooks/useFirestoreCollection';
+const Post = () => {
+  const collection = firestore().collection('Posts');
+  const pageSize = 10;
+  const page = 1;
+  const {data, loading, error, refresh} = useFirestoreCollection(
+    collection,
+    pageSize,
+    page,
+  );
 
-  const getDatabase = async () => {
-    const posts = await getAllPosts();
-    console.log("posts", posts);
-    try {
-      // Colection Lưu trữ danh sách tài liệu=> Cho phép tham chiếu đến testing
-      // Tham chiếu đến một tài liệu = doc
-      const data = await firestore()
-        .collection('Posts')
-        .doc()
-        .get();
-      console.log(data.id);
-      setMydata(data._data);
-    } catch (error) {
-      console.log(error);
-    }
+  useEffect(() => {
+    refresh();
+  }, []);
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  const Item = ({item}) => {
+    return (
+      <View
+      // style={styles.container}
+      >
+        <View style={styles.post}>
+          <View style={styles.post_user}>
+            <View style={styles.post_img}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('User');
+                }}></TouchableOpacity>
+            </View>
+            <View>
+              {}
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('User');
+                }}></TouchableOpacity>
+              <Text style={styles.post_txt}>Sponsored</Text>
+            </View>
+          </View>
+          <View>
+            <FontAwesomeIcon icon={faEllipsis} />
+          </View>
+        </View>
+        <Image
+          style={styles.img_post}
+          source={{
+            uri: item.img,
+          }}
+        />
+        <View>
+          <Text>{item.content}</Text>
+          <Text>{item.id}</Text>
+        </View>
+        <View style={styles.postInfor}>
+          <View style={styles.postInfor_icon}>
+            <FontAwesomeIcon icon={faHeart} />
+            <FontAwesomeIcon icon={faComment} />
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </View>
+          <View>
+            <FontAwesomeIcon icon={faBookmark} />
+          </View>
+        </View>
+      </View>
+    );
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.post}>
-        <View style={styles.post_user}>
-          <View style={styles.post_img}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('User');
-              }}>
-              <Image style={styles.img} source={{uri: myData.avt}} />
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('User');
-              }}>
-              <Text style={styles.post_title}>{myData.name}</Text>
-            </TouchableOpacity>
-            <Text style={styles.post_txt}>Sponsored</Text>
-          </View>
-        </View>
-        <View>
-          <FontAwesomeIcon icon={faEllipsis} />
-        </View>
-      </View>
-      <Image style={styles.img_post} source={{uri: myData.postImg}} />
-      <View style={styles.postInfor}>
-        <View style={styles.postInfor_icon}>
-          <FontAwesomeIcon icon={faHeart} />
-          <FontAwesomeIcon icon={faComment} />
-          <FontAwesomeIcon icon={faPaperPlane} />
-        </View>
-        <View>
-          <FontAwesomeIcon icon={faBookmark} />
-        </View>
-      </View>
-      <View style={styles.postLike}>
-        <Text style={styles.postLike_txt}>100 Likes</Text>
-      </View>
-      <View style={styles.postComment}>
-        <Text style={styles.postComment_use}>Usename</Text>
-        <Text style={styles.postComment_txt}>
-          ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt... more
-        </Text>
-      </View>
-    </View>
+   
+    <>
+      {loading ? (
+        <ActivityIndicator color="#00ff00" size="large" />
+      ) : (
+        <FlatList
+          style={styles.container}
+          data={data}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          onRefresh={refresh}
+          renderItem={Item}
+          refreshing={loading}
+        />
+      )}
+    </>
   );
 };
 

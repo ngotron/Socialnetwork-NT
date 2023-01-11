@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-const AddNewPost = () => {
+const AddNewPost = ({navigation}) => {
   const [imageData, setImageData] = useState(null);
   const [caption, setCaption] = useState('');
   // const openCamera = async () => {
@@ -20,14 +20,12 @@ const AddNewPost = () => {
   //   console.log(result);
   // };
 
-  
-
   async function addPost() {
     await firestore()
       .collection('Posts')
       .add({
         content: caption,
-        imgs: imageData,
+        img: imageData,
       })
       .then(() => {
         navigation.navigate('MyTab');
@@ -67,22 +65,24 @@ const AddNewPost = () => {
   return (
     <View>
       {imageData && (
-        <Image source={{uri: imageData.uri}} style={{width: 200, height: 200}} />
+        <Image
+          source={{uri: imageData.uri}}
+          style={{width: 200, height: 200}}
+        />
       )}
       <View style={styles.container}>
-      
-
         <TextInput
           style={styles.text_InputPost}
           value={caption}
-          onChangeText={() => {
-            setCaption();
-          }}
+          // onChangeText={() => {
+          //   setCaption();
+          // }}
+          onChangeText={caption => setCaption(caption)}
           placeholder="Type your caption..."
         />
       </View>
 
-      <TouchableOpacity style={styles.select_Img} >
+      <TouchableOpacity style={styles.select_Img}>
         <FontAwesomeIcon
           icon={faCamera}
           size={24}
