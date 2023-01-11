@@ -22,7 +22,7 @@ const AddNewPost = ({navigation}) => {
 
   async function addPost() {
     await firestore()
-      .collection('Posts')
+      .collection('Posts_Test')
       .add({
         content: caption,
         img: imageData,
@@ -65,19 +65,31 @@ const AddNewPost = ({navigation}) => {
   return (
     <View>
       {imageData && (
-        <Image
-          source={{uri: imageData.uri}}
-          style={{width: 200, height: 200}}
-        />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            width: '100%',
+          }}>
+          <Image
+            source={{uri: imageData}}
+            style={{
+              width: 200,
+              height: 200,
+
+              justifyContent: 'center',
+            }}
+            // value={img}
+          />
+        </View>
       )}
+
       <View style={styles.container}>
         <TextInput
           style={styles.text_InputPost}
-          value={caption}
-          // onChangeText={() => {
-          //   setCaption();
-          // }}
-          onChangeText={caption => setCaption(caption)}
+          // value={caption}
+
+          onChangeText={setCaption}
           placeholder="Type your caption..."
         />
       </View>

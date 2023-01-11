@@ -5,6 +5,7 @@ import {StyleSheet} from 'react-native';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import MyTabs from './src/navigations/NavigationButton';
 import AddNewPost from './src/screens/feedpost/content/AddNewPost';
+import EditPost from './src/screens/feedpost/content/EditPost';
 import Post from './src/screens/feedpost/content/Post';
 import Navigation from './src/screens/feedpost/header/NavigationBar';
 import AdminScreen from './src/screens/InfoScreen.js/AdminScreen';
@@ -30,6 +31,7 @@ const App = () => {
           <Stack.Screen name="Admin" component={AdminScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="UpdatePost" component={EditPost} />
           <Stack.Screen
             name="MyTab"
             component={MyTabs}

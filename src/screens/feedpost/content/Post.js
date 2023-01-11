@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import firestore from '@react-native-firebase/firestore';
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -17,30 +17,52 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import RBSheet from 'react-native-raw-bottom-sheet';
 import useFirestoreCollection from '../../../hooks/useFirestoreCollection';
-const Post = () => {
-  const collection = firestore().collection('Posts');
-  const pageSize = 10;
-  const page = 1;
+const collection = firestore().collection('Posts_Test');
+const pageSize = 10;
+const page = 1;
+const Post = ({navigation}) => {
   const {data, loading, error, refresh} = useFirestoreCollection(
     collection,
     pageSize,
     page,
   );
+  console.log(
+    'id link: ',
+    data.map(i => i.id),
+  );
 
+  const refRBSheet = useRef();
   useEffect(() => {
     refresh();
-  }, []);
+  }, [collection]);
   if (error) {
     return <Text>Error: {error.message}</Text>;
   }
 
+  ///////delete/////
+  async function deleteItem(id) {
+    await firestore()
+      .collection('Posts_Test')
+      .doc(id)
+      .delete()
+      .then(() => {
+        alert('Deleted Item Successfully!');
+        navigation.navigate('MyTab');
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
+
   const Item = ({item}) => {
     return (
-      <View
-      // style={styles.container}
-      >
-        <View style={styles.post}>
+      <View>
+        {/* {data.map(item => (
+          <Text>{item.id}</Text>
+        ))} */}
+        <View style={styles.post} key={item.id}>
           <View style={styles.post_user}>
             <View style={styles.post_img}>
               <TouchableOpacity
@@ -49,7 +71,6 @@ const Post = () => {
                 }}></TouchableOpacity>
             </View>
             <View>
-              {}
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('User');
@@ -58,7 +79,9 @@ const Post = () => {
             </View>
           </View>
           <View>
-            <FontAwesomeIcon icon={faEllipsis} />
+            <TouchableOpacity onPress={() => refRBSheet.current.open()}>
+              <FontAwesomeIcon icon={faEllipsis} />
+            </TouchableOpacity>
           </View>
         </View>
         <Image
@@ -69,7 +92,7 @@ const Post = () => {
         />
         <View>
           <Text>{item.content}</Text>
-          <Text>{item.id}</Text>
+          {/* <Text>{item.id}</Text> */}
         </View>
         <View style={styles.postInfor}>
           <View style={styles.postInfor_icon}>
@@ -81,15 +104,45 @@ const Post = () => {
             <FontAwesomeIcon icon={faBookmark} />
           </View>
         </View>
+
+        <RBSheet
+          ref={refRBSheet}
+          closeOnDragDown={true}
+          customStyles={{
+            wrapper: {
+              backgroundColor: '#00000099',
+            },
+            draggableIcon: {
+              backgroundColor: '#000',
+            },
+            container: {
+              backgroundColor: 'white',
+            },
+          }}
+          height={300}>
+          <View style={styles.rbSheet_Container}>
+            <TouchableOpacity
+              style={styles.del_Btn}
+              onPress={() => {
+                deleteItem(item.id);
+              }}>
+              <Text>Delete</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.edit_Btn}
+              onPress={() => navigation.navigate('UpdatePost', {item})}>
+              <Text>Edit Post</Text>
+            </TouchableOpacity>
+          </View>
+        </RBSheet>
       </View>
     );
   };
 
   return (
-   
-    <>
+    <View>
       {loading ? (
-        <ActivityIndicator color="#00ff00" size="large" />
+        <ActivityIndicator color="#000" size="large" />
       ) : (
         <FlatList
           style={styles.container}
@@ -101,7 +154,7 @@ const Post = () => {
           refreshing={loading}
         />
       )}
-    </>
+    </View>
   );
 };
 
@@ -121,10 +174,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 5,
+    marginTop: 30,
+    padding: 10
+    
+    
   },
   post_img: {
     marginRight: 10,
@@ -174,6 +227,58 @@ const styles = StyleSheet.create({
   postComment_txt: {
     fontSize: 13,
     marginTop: 3,
+  },
+  containerModal: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    marginTop: 30,
+  },
+  modal: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 100,
+  },
+  text: {
+    color: '#3f2949',
+    marginTop: 10,
+  },
+  bottomSheet_container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  rbSheet_Container: {
+    alignItems: 'center',
+  },
+  del_Btn: {
+    backgroundColor: '#ffffff',
+    width: 280,
+    height: 35,
+    borderRadius: 10,
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#FFBF00',
+  },
+  edit_Btn: {
+    backgroundColor: '#ffffff',
+    width: 280,
+    height: 35,
+    borderRadius: 10,
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#FFBF00',
   },
 });
 export default Post;
