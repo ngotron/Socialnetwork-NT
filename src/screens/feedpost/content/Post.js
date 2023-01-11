@@ -3,11 +3,11 @@ import {
   faComment,
   faEllipsis,
   faHeart,
-  faPaperPlane,
+  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import firestore from '@react-native-firebase/firestore';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -15,14 +15,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import useFirestoreCollection from '../../../hooks/useFirestoreCollection';
-const Post = () => {
+const Post = ({ navigation }) => {
   const collection = firestore().collection('Posts');
   const pageSize = 10;
   const page = 1;
-  const {data, loading, error, refresh} = useFirestoreCollection(
+  const { data, loading, error, refresh } = useFirestoreCollection(
     collection,
     pageSize,
     page,
@@ -35,11 +35,9 @@ const Post = () => {
     return <Text>Error: {error.message}</Text>;
   }
 
-  const Item = ({item}) => {
+  const Item = ({ item }) => {
     return (
-      <View
-      // style={styles.container}
-      >
+      <View>
         <View style={styles.post}>
           <View style={styles.post_user}>
             <View style={styles.post_img}>
@@ -49,7 +47,7 @@ const Post = () => {
                 }}></TouchableOpacity>
             </View>
             <View>
-              {}
+              { }
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('User');
@@ -74,7 +72,17 @@ const Post = () => {
         <View style={styles.postInfor}>
           <View style={styles.postInfor_icon}>
             <FontAwesomeIcon icon={faHeart} />
-            <FontAwesomeIcon icon={faComment} />
+
+            <TouchableOpacity onPress={() => navigation.navigate('Comments', {
+              postId: item.id,
+              comments: item.comments,
+              userId: item.userId
+            })} style={{ flexDirection: "row", alignItems: "center" }}>
+
+              <FontAwesomeIcon icon={faComment} />
+              <Text>{item.comments.length}</Text>
+            </TouchableOpacity>
+
             <FontAwesomeIcon icon={faPaperPlane} />
           </View>
           <View>
@@ -86,7 +94,6 @@ const Post = () => {
   };
 
   return (
-   
     <>
       {loading ? (
         <ActivityIndicator color="#00ff00" size="large" />
@@ -95,7 +102,7 @@ const Post = () => {
           style={styles.container}
           data={data}
           showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           onRefresh={refresh}
           renderItem={Item}
           refreshing={loading}
