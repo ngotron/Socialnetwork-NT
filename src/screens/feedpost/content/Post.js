@@ -3,9 +3,9 @@ import {
   faComment,
   faEllipsis,
   faHeart,
-  faPaperPlane
+  faPaperPlane,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useRef} from 'react';
 import {
@@ -15,11 +15,11 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import useFirestoreCollection from '../../../hooks/useFirestoreCollection';
-const collection = firestore().collection('Posts_Test');
+const collection = firestore().collection('Posts');
 const pageSize = 10;
 const page = 1;
 const Post = ({navigation}) => {
@@ -28,10 +28,7 @@ const Post = ({navigation}) => {
     pageSize,
     page,
   );
-  console.log(
-    'id link: ',
-    data.map(i => i.id),
-  );
+
 
   const refRBSheet = useRef();
   useEffect(() => {
@@ -44,7 +41,7 @@ const Post = ({navigation}) => {
   ///////delete/////
   async function deleteItem(id) {
     await firestore()
-      .collection('Posts_Test')
+      .collection('Posts')
       .doc(id)
       .delete()
       .then(() => {
@@ -59,9 +56,6 @@ const Post = ({navigation}) => {
   const Item = ({item}) => {
     return (
       <View>
-        {/* {data.map(item => (
-          <Text>{item.id}</Text>
-        ))} */}
         <View style={styles.post} key={item.id}>
           <View style={styles.post_user}>
             <View style={styles.post_img}>
@@ -98,14 +92,21 @@ const Post = ({navigation}) => {
           <View style={styles.postInfor_icon}>
             <FontAwesomeIcon icon={faHeart} />
 
-            <TouchableOpacity onPress={() => navigation.navigate('Comments', {
-              postId: item.id,
-              comments: item.comments,
-              userId: item.userId
-            })} style={{ flexDirection: "row", alignItems: "center" }}>
-
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Comments', {
+                  postId: item.id,
+                  comments: item.comments,
+                  userId: item.userId,
+                })
+              }
+              style={{flexDirection: 'row', alignItems: 'center'}}>
               <FontAwesomeIcon icon={faComment} />
-              <Text>{item.comments.length}</Text>
+              {item.comments ? (
+                <Text>{item.comments.length}</Text>
+              ) : (
+                <Text>0</Text>
+              )}
             </TouchableOpacity>
 
             <FontAwesomeIcon icon={faPaperPlane} />
@@ -158,7 +159,7 @@ const Post = ({navigation}) => {
           style={styles.container}
           data={data}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           onRefresh={refresh}
           renderItem={Item}
           refreshing={loading}
@@ -185,9 +186,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 30,
-    padding: 10
-    
-    
+    padding: 10,
   },
   post_img: {
     marginRight: 10,

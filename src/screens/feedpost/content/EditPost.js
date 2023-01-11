@@ -21,7 +21,7 @@ const EditPost = ({navigation, route}) => {
   async function updatePost() {
     console.log('id up :', item.id);
     await firestore()
-      .collection('Posts_Test')
+      .collection('Posts')
       .doc(item.id)
       .update({
         content: caption,

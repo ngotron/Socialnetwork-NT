@@ -15,6 +15,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 const AddNewPost = ({navigation}) => {
   const [imageData, setImageData] = useState(null);
   const [caption, setCaption] = useState('');
+  const [comment, setComment] = useState([]);
   // const openCamera = async () => {
   //   setImageData(result);
   //   console.log(result);
@@ -22,7 +23,7 @@ const AddNewPost = ({navigation}) => {
 
   async function addPost() {
     await firestore()
-      .collection('Posts_Test')
+      .collection('Posts')
       .add({
         content: caption,
         img: imageData,
