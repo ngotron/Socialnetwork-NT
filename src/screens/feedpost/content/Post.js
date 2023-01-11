@@ -3,9 +3,9 @@ import {
   faComment,
   faEllipsis,
   faHeart,
-  faPaperPlane,
+  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import firestore from '@react-native-firebase/firestore';
 import {useEffect, useRef} from 'react';
 import {
@@ -15,7 +15,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import useFirestoreCollection from '../../../hooks/useFirestoreCollection';
@@ -97,7 +97,17 @@ const Post = ({navigation}) => {
         <View style={styles.postInfor}>
           <View style={styles.postInfor_icon}>
             <FontAwesomeIcon icon={faHeart} />
-            <FontAwesomeIcon icon={faComment} />
+
+            <TouchableOpacity onPress={() => navigation.navigate('Comments', {
+              postId: item.id,
+              comments: item.comments,
+              userId: item.userId
+            })} style={{ flexDirection: "row", alignItems: "center" }}>
+
+              <FontAwesomeIcon icon={faComment} />
+              <Text>{item.comments.length}</Text>
+            </TouchableOpacity>
+
             <FontAwesomeIcon icon={faPaperPlane} />
           </View>
           <View>
@@ -148,7 +158,7 @@ const Post = ({navigation}) => {
           style={styles.container}
           data={data}
           showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           onRefresh={refresh}
           renderItem={Item}
           refreshing={loading}
